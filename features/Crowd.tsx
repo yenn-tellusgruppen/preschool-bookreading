@@ -15,6 +15,7 @@ import {
 export default function Crowd() {
   const searchParams = useSearchParams();
   const title = searchParams.get("title");
+  
   const [crowdRows, setCrowdRows] = React.useState([
     {
       key: "C",

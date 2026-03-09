@@ -25,9 +25,11 @@ export default function BookMenu() {
                 CROWD
               </div>
             </Link>
+            <Link href={title ? `/target-words?title=${encodeURIComponent(title)}` : '/target-words'}>
             <div className="bg-gray-300 w-50 h-50 rounded-lg flex items-center justify-center hover:bg-gray-500 transition-colors duration-500 ease-in-out cursor-pointer">
               Målord
             </div>
+            </Link>
             <div className="bg-gray-300 w-50 h-50 rounded-lg flex items-center justify-center hover:bg-gray-500 transition-colors duration-500 ease-in-out cursor-pointer">
               Dokumentation
             </div>

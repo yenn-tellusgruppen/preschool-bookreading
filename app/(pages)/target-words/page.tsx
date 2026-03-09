@@ -1,8 +1,8 @@
 import React from 'react'
-import Bookshelves from '@/features/Bookshelves'
+import TargetWords from '@/features/TargetWords'
 
 export default function page() {
   return (
-      <Bookshelves />
+      <TargetWords />
   )
 }
