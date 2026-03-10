@@ -112,7 +112,7 @@ export default function Bookshelves() {
               <h2 className="text-xl font-bold">{selectedBook}</h2>
               <button 
                 onClick={() => setSelectedBook(null)}
-                className="text-gray-500 hover:text-gray-700 text-2xl"
+                className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
               >
                 ×
               </button>

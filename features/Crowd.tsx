@@ -2,7 +2,14 @@
 import React from "react";
 import { useSearchParams } from "next/navigation";
 
-import { ChevronRight, ChevronDown, ChevronLeft, ArrowLeft } from "lucide-react";
+import Link from "next/link";
+
+import {
+  ChevronRight,
+  ChevronDown,
+  ChevronLeft,
+  ArrowLeft,
+} from "lucide-react";
 import { AnimatePresence, motion } from "framer-motion";
 import { Button } from "@/components/ui/button";
 import {
@@ -11,11 +18,12 @@ import {
   TooltipTrigger,
   TooltipProvider,
 } from "@/components/ui/tooltip";
+import BookMenu from "./BookMenu";
 
 export default function Crowd() {
   const searchParams = useSearchParams();
   const title = searchParams.get("title");
-  
+
   const [crowdRows, setCrowdRows] = React.useState([
     {
       key: "C",
@@ -83,6 +91,7 @@ export default function Crowd() {
 
   // Dialog state
   const [showDialog, setShowDialog] = React.useState(false);
+  const [showBokmenyDialog, setShowBokmenyDialog] = React.useState(false);
   const [newQuestion, setNewQuestion] = React.useState("");
   const [selectedRow, setSelectedRow] = React.useState("");
   const [rowError, setRowError] = React.useState(false);
@@ -138,15 +147,39 @@ export default function Crowd() {
 
   return (
     <div className="flex flex-col justify-center items-center w-full">
-      <Button variant="ghost" className="self-start ml-4 mt-4 cursor-pointer" onClick={() => window.history.back()}>
-        <ArrowLeft /> Tillbaka
+      <Link href="/" className="self-start">
+      <Button
+        variant="ghost"
+        className="ml-4 mt-4 cursor-pointer"
+      
+      >
+        <ArrowLeft /> Bokhyllor
       </Button>
-      <h1 className="text-2xl font-bold m-4 self-start">CROWD-frågor</h1>
-      {title && (
-        <div className="mb-6 ml-4 text-lg text-gray-600 self-start">
-          {title}
+      </Link>
+      <div className="flex justify-between w-full mb-5 px-[20%]">
+        <div>
+          <h1 className="text-2xl font-bold self-start">CROWD-frågor</h1>
+          {title && (
+            <div className="text-lg text-gray-600 self-start">{title}</div>
+          )}
         </div>
-      )}
+        <div className="flex gap-2">
+          <Button
+            variant="default"
+            className="cursor-pointer"
+            onClick={createNewQuestion}
+          >
+            Skriv ny fråga
+          </Button>
+          <Button
+            variant="outline"
+            className="cursor-pointer"
+            onClick={() => setShowBokmenyDialog(true)}
+          >
+            Bokmeny
+          </Button>
+        </div>
+      </div>
       <div className="flex flex-col gap-2 w-full items-center">
         {crowdRows.map((row, idx) => (
           <div
@@ -205,14 +238,6 @@ export default function Crowd() {
         ))}
       </div>
 
-      <Button
-        variant="outline"
-        className="mt-8 self-end mr-[20%] cursor-pointer"
-        onClick={createNewQuestion}
-      >
-        Skriv ny fråga
-      </Button>
-
       {/* Dialog/modal för ny fråga */}
       {showDialog && (
         <TooltipProvider>
@@ -264,6 +289,7 @@ export default function Crowd() {
                   type="button"
                   variant="ghost"
                   onClick={handleDialogClose}
+                  className="cursor-pointer"
                 >
                   Avbryt
                 </Button>
@@ -271,6 +297,7 @@ export default function Crowd() {
                   type="submit"
                   variant="default"
                   disabled={newQuestion.trim() === ""}
+                  className="cursor-pointer"
                 >
                   Spara
                 </Button>
@@ -278,6 +305,23 @@ export default function Crowd() {
             </form>
           </div>
         </TooltipProvider>
+      )}
+
+      {showBokmenyDialog && (
+        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
+          <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
+            <div className="flex justify-between items-center mb-4">
+              <h2 className="text-xl font-bold">{title}</h2>
+              <button 
+                onClick={() => setShowBokmenyDialog(false)}
+                className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
+              >
+                ×
+              </button>
+            </div>
+            <BookMenu bookTitle={title || undefined} />
+          </div>
+        </div>
       )}
     </div>
   );
