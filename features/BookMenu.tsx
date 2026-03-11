@@ -8,11 +8,13 @@ import Link from 'next/link';
 
 interface BookMenuProps {
   bookTitle?: string;
+  bookAuthor?: string;
 }
 
-export default function BookMenu({ bookTitle }: BookMenuProps) {
+export default function BookMenu({ bookTitle, bookAuthor }: BookMenuProps) {
   const searchParams = useSearchParams();
   const title = bookTitle || searchParams.get('title');
+  const author = bookAuthor || searchParams.get('author');
   return (
     <div className="relative">
         <div className="flex flex-col gap-4 items-center">
@@ -27,13 +29,15 @@ export default function BookMenu({ bookTitle }: BookMenuProps) {
               <p>Målord</p>
             </div>
             </Link>
+            <Link href={title ? `/book-planning?title=${encodeURIComponent(title)}${author ? `&author=${encodeURIComponent(author)}` : ''}` : '/book-planning'}>
             <div className="bg-green-300 w-45 h-45 rounded-lg flex items-center justify-center hover:bg-green-500 hover:tracking-widest hover:text-lg transition-all duration-500 ease-in-out cursor-pointer">
-              <p>Dokumentation</p>
+              <p>Planering</p>
             </div>
+            </Link>
           </div>
           <div className="flex gap-4 justify-center">
             <div className="bg-purple-300 w-45 h-45 rounded-lg flex items-center justify-center hover:bg-purple-500 hover:tracking-widest hover:text-lg transition-all duration-500 ease-in-out cursor-pointer">
-              <p>Planering</p>
+              <p>Dokumentation</p>
             </div>
             <div className="bg-pink-300 w-45 h-45 rounded-lg flex items-center justify-center hover:bg-pink-500 hover:tracking-widest hover:text-lg transition-all duration-500 ease-in-out cursor-pointer">
               <p>Läsgrupper</p>

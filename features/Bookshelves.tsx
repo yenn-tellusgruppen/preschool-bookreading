@@ -2,6 +2,7 @@
 
 import React from "react";
 import { data } from "@/data/bookshelves";
+import type { Book as BookType } from "@/data/bookshelves";
 import { motion, AnimatePresence } from "framer-motion";
 import BookMenu from "./BookMenu";
 import { PawPrint, Heart, Palette, Book } from "lucide-react";
@@ -10,7 +11,7 @@ import { Input } from "@/components/ui/input";
 
 export default function Bookshelves() {
   const [openShelves, setOpenShelves] = React.useState<Set<string>>(new Set());
-  const [selectedBook, setSelectedBook] = React.useState<string | null>(null);
+  const [selectedBook, setSelectedBook] = React.useState<BookType | null>(null);
   const [searchQuery, setSearchQuery] = React.useState("");
 
 
@@ -89,7 +90,7 @@ export default function Bookshelves() {
                           className="flex flex-col items-center h-[90%] cursor-pointer bg-taupe-100 rounded-lg hover:scale-105  transition-all duration-300 ease-in-out"
                           onClick={(e) => {
                             e.stopPropagation();
-                            setSelectedBook(book.title);
+                            setSelectedBook(book);
                           }}
                         >
                           <img
@@ -135,7 +136,7 @@ export default function Bookshelves() {
               style={{ perspective: 1000 }}
             >
               <div className="p-4 border-b flex justify-between items-center">
-                <h2 className="text-xl font-bold">{selectedBook}</h2>
+                <h2 className="text-xl font-bold">{selectedBook?.title}</h2>
                 <button
                   onClick={() => setSelectedBook(null)}
                   className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
@@ -144,7 +145,7 @@ export default function Bookshelves() {
                 </button>
               </div>
               <div className="p-6">
-                <BookMenu bookTitle={selectedBook} />
+                <BookMenu bookTitle={selectedBook?.title} bookAuthor={selectedBook?.author} />
               </div>
             </motion.div>
           </motion.div>
