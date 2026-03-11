@@ -68,7 +68,8 @@ export default function TargetWords() {
 
   const [openMenuIdx, setOpenMenuIdx] = React.useState<number | null>(null);
   const [showNewWordDialog, setShowNewWordDialog] = React.useState(false);
-  const [showBokmenyDialog, setShowBokmenyDialog] = React.useState(false);
+  const [showPrintDialog, setShowPrintDialog] = React.useState(false);
+  
   const [newWord, setNewWord] = React.useState("");
   const [newDescription, setNewDescription] = React.useState("");
   const [newWordColor, setNewWordColor] = React.useState(colorOptions[0]);
@@ -85,6 +86,105 @@ export default function TargetWords() {
     setNewWord("");
     setNewDescription("");
     setNewWordColor(colorOptions[0]);
+  };
+
+  const getColorHex = (colorClass: string): string => {
+    const colorMap: { [key: string]: string } = {
+      "bg-yellow-300": "#fcd34d",
+      "bg-green-400": "#4ade80",
+      "bg-sky-300": "#7dd3fc",
+      "bg-pink-300": "#f472b6",
+      "bg-purple-300": "#d8b4fe",
+      "bg-zinc-300": "#d4d4d8",
+    };
+    return colorMap[colorClass] || "#ffffff";
+  };
+
+  const handlePrint = () => {
+    const printContent = `
+      <!DOCTYPE html>
+      <html>
+        <head>
+          <title>Målord${title ? ` - ${title}` : ""}</title>
+          <style>
+            body {
+              font-family: Arial, sans-serif;
+              padding: 20px;
+              color: #333;
+              background-color: #f5f5f5;
+              
+            }
+            h1 {
+              font-size: 24px;
+              margin-bottom: 10px;
+            }
+            .book-title {
+              font-size: 16px;
+              color: #666;
+              margin-bottom: 30px;
+            }
+            .cards-container {
+              display: grid;
+              grid-template-columns: repeat(3, 1fr);
+              gap: 15px;
+              margin-top: 20px;
+            }
+            .card {
+              padding: 15px;
+              border-radius: 8px;
+              box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+              page-break-inside: avoid;
+            }
+            .card-title {
+              font-size: 18px;
+              font-weight: bold;
+              margin-bottom: 10px;
+            }
+            .card-content {
+              font-size: 14px;
+              line-height: 1.6;
+            }
+            @media (max-width: 800px) {
+              .cards-container {
+                grid-template-columns: repeat(2, 1fr);
+              }
+            }
+            @media print {
+              body {
+                background-color: white;
+                padding: 0;
+              }
+              .cards-container {
+                grid-template-columns: repeat(3, 1fr);
+              }
+            }
+          </style>
+        </head>
+        <body>
+          <h1>Målord</h1>
+          ${title ? `<p class="book-title">Bok: ${title}</p>` : ""}
+          <div class="cards-container">
+            ${targetWordRows
+              .map(
+                (row) => `
+              <div class="card" style="background-color: ${getColorHex(row.color)}; print-color-adjust: exact; -webkit-print-color-adjust: exact;">
+                <div class="card-title">${row.label}</div>
+                <div class="card-content">${row.content}</div>
+              </div>
+            `,
+              )
+              .join("")}
+          </div>
+        </body>
+      </html>
+    `;
+
+    const printWindow = window.open("", "_blank");
+    if (printWindow) {
+      printWindow.document.write(printContent);
+      printWindow.document.close();
+      printWindow.print();
+    }
   };
 
   const handleCreateWord = (e: React.FormEvent) => {
@@ -134,9 +234,9 @@ export default function TargetWords() {
           <Button
             variant="outline"
             className="cursor-pointer"
-            onClick={() => setShowBokmenyDialog(true)}
+            onClick={() => handlePrint()}
           >
-            Bokmeny
+            Skriv ut
           </Button>
         </div>
       </div>
@@ -275,22 +375,6 @@ export default function TargetWords() {
         </div>
       )}
 
-      {showBokmenyDialog && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center bg-black/30">
-          <div className="bg-white rounded-lg shadow-lg p-8 max-w-2xl w-full mx-4 max-h-[90vh] overflow-y-auto">
-            <div className="flex justify-between items-center mb-4">
-              <h2 className="text-xl font-bold">{title}</h2>
-              <button 
-                onClick={() => setShowBokmenyDialog(false)}
-                className="text-gray-500 hover:text-gray-700 text-2xl cursor-pointer"
-              >
-                ×
-              </button>
-            </div>
-            <BookMenu bookTitle={title || undefined} />
-          </div>
-        </div>
-      )}
     </div>
   );
 }
